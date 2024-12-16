@@ -13,17 +13,21 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import { useNavigate } from 'react-router-dom'; 
 import PersonIcon from '@mui/icons-material/Person';
+
 const pages = ['Home', 'Jobs', 'Notifications', 'Messages'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate(); 
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -34,6 +38,15 @@ function Navbar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  // Handle logout logic
+  const handleLogout = () => {
+    // Clear user session data, e.g., localStorage or cookies
+    localStorage.removeItem('userEmail');
+    // Optionally, clear any other session-related data
+    // Redirect to login page
+    navigate('/');
   };
 
   return (
@@ -126,9 +139,10 @@ function Navbar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <PersonIcon fontSize='large' sx={{color : 'white', display: { xs: 'none', md: 'flex' }, mr: 1 }}/>
+                <PersonIcon onClick={()=> navigate('/profile')} fontSize='large' sx={{color : 'white', display: { xs: 'none', md: 'flex' }, mr: 1 }}/>
               </IconButton>
             </Tooltip>
+            {/* User Menu */}
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -146,8 +160,8 @@ function Navbar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                <MenuItem key={setting} onClick={setting === 'Logout' ? handleLogout : handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -157,4 +171,5 @@ function Navbar() {
     </AppBar>
   );
 }
+
 export default Navbar;

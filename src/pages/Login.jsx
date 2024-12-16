@@ -4,8 +4,6 @@ import { Box, TextField, Button, Typography, Container, Alert, Grid, Avatar, Pap
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirect
 
-
-
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,14 +18,15 @@ const Login = () => {
       const response = await axios.post('/users/login', { email, password });
       const token = response.data.token;
 
-      // Save token to localStorage or HttpOnly cookies
+      // Save token and email to localStorage
       localStorage.setItem('token', token);
+      localStorage.setItem('userEmail', email); // Save email for fetching profile
 
       setSuccess('Login successful!');
       setError('');
 
-      // Redirect to the home page after successful login
-      navigate('/home'); // Replace '/home' with your actual home route
+      // Redirect to the profile page
+      navigate('/profile'); // Replace '/profile' with your profile route
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.error || 'Login failed');
