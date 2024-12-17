@@ -16,13 +16,13 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import { useNavigate } from 'react-router-dom'; 
 import PersonIcon from '@mui/icons-material/Person';
 
-const pages = ['Home', 'Jobs', 'Notifications', 'Messages'];
+const pages = ['Home', 'Jobs', 'Notifications', 'Messages', 'My Posts'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-function Navbar() {
+const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -40,13 +40,21 @@ function Navbar() {
     setAnchorElUser(null);
   };
 
-  // Handle logout logic
+  const handleNavigate = (path) => {
+    navigate(path);
+    handleCloseNavMenu(); // Close the nav menu after navigation
+  };
+
   const handleLogout = () => {
-    // Clear user session data, e.g., localStorage or cookies
-    localStorage.removeItem('userEmail');
-    // Optionally, clear any other session-related data
-    // Redirect to login page
+    sessionStorage.removeItem('userEmail');
     navigate('/');
+  };
+
+  const pageRoutes = {
+    Home: '/home',
+    'My Posts': '/feed',
+    Messages: '/chatbox',
+    Notifications: '/notifications',
   };
 
   return (
@@ -99,8 +107,8 @@ function Navbar() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+              {Object.keys(pageRoutes).map((page) => (
+                <MenuItem key={page} onClick={() => handleNavigate(pageRoutes[page])}>
                   <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
               ))}
@@ -126,10 +134,10 @@ function Navbar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {Object.keys(pageRoutes).map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handleNavigate(pageRoutes[page])}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
@@ -139,10 +147,13 @@ function Navbar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <PersonIcon onClick={()=> navigate('/profile')} fontSize='large' sx={{color : 'white', display: { xs: 'none', md: 'flex' }, mr: 1 }}/>
+                <PersonIcon
+                  // onClick={() => navigate('/profile')}
+                  fontSize="large"
+                  sx={{ color: 'white', display: { xs: 'none', md: 'flex' }, mr: 1 }}
+                />
               </IconButton>
             </Tooltip>
-            {/* User Menu */}
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -160,7 +171,18 @@ function Navbar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={setting === 'Logout' ? handleLogout : handleCloseUserMenu}>
+               <MenuItem
+               key={setting}
+               onClick={() => {
+                 if (setting === 'Logout') {
+                   handleLogout();
+                 } else if (setting === 'Profile') {
+                   navigate('/profile');
+                 } else {
+                   handleCloseUserMenu();
+                 }
+               }}
+             >
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
@@ -170,6 +192,6 @@ function Navbar() {
       </Container>
     </AppBar>
   );
-}
+};
 
 export default Navbar;

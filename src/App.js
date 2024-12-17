@@ -6,12 +6,13 @@ import Profile from './pages/Profile';
 import ProtectedRoute from './pages/ProtectedRoutes';
 import Navbar from './components/Navbar/Navbar'
 import Home from "./pages/Home"
+import Feed from './components/Feed/Feed';
 function App() {
   return (
     <Router>
         <Navbar />
       <Routes>
-        <Route path="/Home" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
@@ -19,6 +20,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/feed"
+          element={
+            <ProtectedRoute>
+              <Feed />
             </ProtectedRoute>
           }
         />

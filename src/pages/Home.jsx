@@ -3,7 +3,7 @@ import Feed from '../components/Feed/Feed'
 function Home() {
   return (
     <div>
-      <Feed />
+      Home 
     </div>
   )
 }

@@ -18,9 +18,9 @@ const Login = () => {
       const response = await axios.post('/users/login', { email, password });
       const token = response.data.token;
 
-      // Save token and email to localStorage
-      localStorage.setItem('token', token);
-      localStorage.setItem('userEmail', email); // Save email for fetching profile
+      // Save token and email to sessionStorage
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('userEmail', email); // Save email for fetching profile
 
       setSuccess('Login successful!');
       setError('');
