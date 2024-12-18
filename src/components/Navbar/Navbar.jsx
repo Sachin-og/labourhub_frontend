@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 
 const pages = ['Home', 'Jobs', 'Notifications', 'Messages', 'My Posts'];
@@ -40,25 +40,32 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
 
-  const handleNavigate = (path) => {
-    navigate(path);
-    handleCloseNavMenu(); // Close the nav menu after navigation
-  };
-
   const handleLogout = () => {
     sessionStorage.removeItem('userEmail');
+    sessionStorage.removeItem('userId'); // Ensure userId is removed on logout
     navigate('/');
+  };
+
+  const handleNavigate = (path) => {
+    // Get userId from sessionStorage
+    const userId = sessionStorage.getItem('userId');
+    if (path === '/notifications' && userId) {
+      navigate(`/notifications/${userId}`);
+    } else {
+      navigate(path);
+    }
+    handleCloseNavMenu(); // Close the nav menu after navigation
   };
 
   const pageRoutes = {
     Home: '/home',
     'My Posts': '/feed',
     Messages: '/chatbox',
-    Notifications: '/notifications',
+    Notifications: '/notifications', // Path will be dynamically adjusted in handleNavigate
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <BusinessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -148,7 +155,6 @@ const Navbar = () => {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <PersonIcon
-                  // onClick={() => navigate('/profile')}
                   fontSize="large"
                   sx={{ color: 'white', display: { xs: 'none', md: 'flex' }, mr: 1 }}
                 />
@@ -171,18 +177,18 @@ const Navbar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-               <MenuItem
-               key={setting}
-               onClick={() => {
-                 if (setting === 'Logout') {
-                   handleLogout();
-                 } else if (setting === 'Profile') {
-                   navigate('/profile');
-                 } else {
-                   handleCloseUserMenu();
-                 }
-               }}
-             >
+                <MenuItem
+                  key={setting}
+                  onClick={() => {
+                    if (setting === 'Logout') {
+                      handleLogout();
+                    } else if (setting === 'Profile') {
+                      navigate('/profile');
+                    } else {
+                      handleCloseUserMenu();
+                    }
+                  }}
+                >
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

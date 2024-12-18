@@ -135,7 +135,7 @@ const Feed = () => {
   }
 
   return (
-    <Box sx={{ p: 2, mt: 2 }}>
+    <Box sx={{ p: 2, mt: 10 }}>
       {/* Filter Dropdown */}
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         

@@ -58,13 +58,46 @@ export const getAllPosts = async (userId) => {
     throw error.response ? error.response.data : error.message; // Return error details
   }
 };
+export const getUsers = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/search/users`); // Replace with your backend endpoint
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
 const instance = axios.create({
   baseURL: 'http://localhost:5000', // Ensure this is the correct base URL
   headers: {
     'Content-Type': 'application/json',
   },
 });
-
+export const getUserById = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/search/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Error fetching user profile: ' + error.message);
+  }
+};
+export const getPostById = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/posts/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Error fetching user profile: ' + error.message);
+  }
+};
+export const fetchNotifications = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/notification/${userId}`);
+    return response.data; // Return the notifications data
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    throw error; // Re-throw the error for further handling
+  }
+};
 export const deletePost = async (postId) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/api/posts/delete/${postId}`);
@@ -77,11 +110,23 @@ export const deletePost = async (postId) => {
 
 export const editPost = async (postId, updatedPostData) => {
   try {
-    const response = await axios.put(`/api/posts/edit/${postId}`, updatedPostData);
+    const response = await axios.put(`${API_BASE_URL}/api/posts/edit/${postId}`, updatedPostData);
     return response.data; // Return updated post data
   } catch (error) {
     console.error('Error editing the post:', error);
     throw error.response?.data || { error: 'Failed to edit post' };
+  }
+};
+
+
+// Function to fetch recent posts (posted within the last 5 days)
+export const getRecentPosts = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/posts/recent`); // Adjust the URL as per your API
+    return response.data; // Return the posts data
+  } catch (error) {
+    console.error('Error fetching recent posts:', error);
+    throw new Error('Error fetching recent posts'); // Handle error appropriately
   }
 };
 
