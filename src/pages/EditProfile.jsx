@@ -24,26 +24,20 @@ function EditProfile() {
     const [profile, setProfile] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    experience: [],
-    education: [],
-    certifications: [],
+    bio: '', // Ensure it's a string
+    skills: '', // Ensure it's a string
+    linkedin: '', // Ensure it's a string (URL format)
+    github: '', // Ensure it's a string (URL format)
+    website: '', // Ensure it's a string (URL format)
+    experience: [], // Ensure it's an array
+    education: [], // Ensure it's an array
+    certifications: [], // Ensure it's an array
   });
   
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
   const [openPostDialog, setOpenPostDialog] = useState(false);
-  const [postData, setPostData] = useState({
-    userid:'',
-    content: '',
-    location: '',
-    isopened: true,
-    isaccepted: false,
-    typeofwork: '',
-    durationofwork: '',
-    jobimage: '',
-  });
-
+  
   const navigate = useNavigate();
   // Fetch email from sessionStorage
   
@@ -184,28 +178,32 @@ const handleOpenPostDialog = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
-  
-    const updatedData = {
-      id: profile.id, // Ensure user ID is included
-      name: formData.name || profile.name,
-      email: formData.email || profile.email,
-      city: formData.city || profile.city,
-      profilePicture: formData.profilePicture || profile.profilePicture,
-      bio: formData.bio || profile.bio,
-      skills: formData.skills || profile.skills,
-      linkedin: formData.linkedin || "",
-      github: formData.github || profile.github,
-      website: formData.website || profile.website,
-      experience: formData.experience || profile.experience || [],
-      education: formData.education || profile.education || [],
-      certifications: formData.certifications || profile.certifications || [],
+    const cleanProfileData = (data) => {
+      const cleanedData = {};
+      Object.keys(data).forEach((key) => {
+        if (data[key] !== null && data[key] !== '') {
+          cleanedData[key] = data[key]; // Only include non-null, non-empty fields
+        }
+      });
+      return cleanedData;
     };
+    
+    const updatedData = cleanProfileData({
+      ...formData,
+      bio: formData.bio || '', // Ensure string
+      skills: formData.skills || '', // Ensure string
+      linkedin: formData.linkedin || "", // Ensure valid URL or empty string
+      github: formData.github || "", // Ensure valid URL or empty string
+      website: formData.website || "", // Ensure valid URL or empty string
+      experience: Array.isArray(formData.experience) ? formData.experience : [], // Ensure array
+      education: Array.isArray(formData.education) ? formData.education : [], // Ensure array
+      certifications: Array.isArray(formData.certifications) ? formData.certifications : [], // Ensure array
+    });
   
     try {
       console.log('Updating Profile with Data:', updatedData);
-      await updateProfile(updatedData);
-      const updatedProfile = await getProfile(userEmail);
-      setProfile(updatedProfile);
+      const updatedProfile = await updateProfile(updatedData);
+      setProfile(updatedProfile); // Update the local profile state
       setSuccess('Profile updated successfully!');
       setEditMode(false);
     } catch (err) {
@@ -293,7 +291,7 @@ const handleOpenPostDialog = () => {
             label="linkedin"
             name="linkedin"
             fullWidth
-            value={formData.linkedin || ""}
+            value={formData.linkedin || ''}
             onChange={handleInputChange}
             sx={{ mb: 2 }}
             required

@@ -49,7 +49,7 @@ const Register = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs"  sx={{ mt: 13 }}>
       <Paper
         elevation={3}
         sx={{

@@ -60,7 +60,7 @@ const Navbar = () => {
   const pageRoutes = {
     Home: '/home',
     'My Posts': '/feed',
-    Messages: '/chatbox',
+    Messages: '/chat',
     Notifications: '/notifications', // Path will be dynamically adjusted in handleNavigate
   };
 

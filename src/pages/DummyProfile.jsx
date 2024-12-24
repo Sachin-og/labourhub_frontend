@@ -57,6 +57,10 @@ const DummyProfile = () => {
     navigate('/users'); // Navigate back to the users list or search page
   };
 
+  const handleChat = () => {
+    navigate(`/chat/${userId}`); // Navigate to the chat screen with this user
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
@@ -94,6 +98,11 @@ const DummyProfile = () => {
         <Typography variant="body1" paragraph>
           <strong>Skills:</strong> {userProfile.skills || 'No skills listed'}
         </Typography>
+        <Box display="flex" justifyContent="center" marginTop={2}>
+          <Button variant="contained" color="primary" onClick={handleChat}>
+            Chat with {userProfile.name}
+          </Button>
+        </Box>
         <Box display="flex" justifyContent="center" marginTop={2}>
           <Button variant="contained" color="primary" onClick={handleBack}>
             Back to Search

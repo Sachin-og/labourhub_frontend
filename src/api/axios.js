@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 
-const API_BASE_URL = 'http://localhost:5000'; // Update to match your backend URL
+const API_BASE_URL = 'http://localhost:5000'; 
+const API_BASE_URL2 = 'http://localhost:5002/api'; 
 
 export const getProfile = async (email) => {
   try {
@@ -17,6 +18,7 @@ export const getProfile = async (email) => {
 
 export const updateProfile = async (profileData) => {
   try {
+    console.log("Profile Data Sent:", profileData); // Add this for debugging
     const response = await axios.put(`${API_BASE_URL}/profile/update`, profileData);
     return response.data; // Return success message and updated profile
   } catch (error) {
@@ -119,6 +121,39 @@ export const editPost = async (postId, updatedPostData) => {
 };
 
 
+// Fetch recent chat users
+export const fetchRecentChats = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/chat/recent-chats/${userId}`);
+    return response.data; // Array of user IDs
+  } catch (error) {
+    console.error('Error fetching recent chats:', error);
+    throw error;
+  }
+};
+
+// Fetch messages between two users
+export const fetchMessages = async (senderId, receiverId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/chat/messages/${senderId}/${receiverId}`);
+    return response.data; // Array of messages
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    throw error;
+  }
+};
+
+// Send a message
+export const sendMessage = async (message) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/chat/message`, message);
+    return response.data; // Sent message
+  } catch (error) {
+    console.error('Error sending message:', error);
+    throw error;
+  }
+};
+
 // Function to fetch recent posts (posted within the last 5 days)
 export const getRecentPosts = async () => {
   try {
@@ -129,5 +164,8 @@ export const getRecentPosts = async () => {
     throw new Error('Error fetching recent posts'); // Handle error appropriately
   }
 };
+
+
+
 
 export default instance;
