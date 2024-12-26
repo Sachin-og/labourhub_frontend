@@ -1,39 +1,50 @@
+.chatwin {
+  display: flex;
+  height: 90vh;
+  margin-top: 50px;
+}
+
 .chat-screen {
-    display: flex;
-    height: 100vh;
-    background-color: #f1f1f1;
-    font-family: Arial, sans-serif;
-    margin-top: 70px;
+  display: flex;
+  width: 100%;
+  background-color: #f4f5f6;
+  overflow: hidden;
+}
+
+.chat-sidebar-container {
+  width: 250px; /* Fixed width for the sidebar */
+  height: 100vh;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  z-index: 1;
+}
+
+.chat-window-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #e5ddd5;
+  height: 100%;
+  padding: 20px;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .chatwin {
+    flex-direction: column; /* Stack the sidebar and chat window on smaller screens */
   }
-  
-  /* Sidebar Styling */
+
   .chat-sidebar-container {
-    flex: 1;
-    max-width: 300px;
-    background-color: #fff;
-    border-right: 1px solid #ddd;
-    overflow-y: auto;
+    width: 100%;
+    height: 50px; /* Make the sidebar smaller */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: #ffffff;
   }
-  
-  /* Chat Window Styling */
+
   .chat-window-container {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    background-color: #f8f9fa;
+    margin-top: 50px; /* Add space for the fixed sidebar */
   }
-  
-  .no-chat-selected {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2em;
-    color: #888;
-  }
-  
-  .no-chat-selected p {
-    text-align: center;
-    color: #555;
-  }
-  
+}

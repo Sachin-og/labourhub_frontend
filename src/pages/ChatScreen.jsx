@@ -12,6 +12,7 @@ const ChatScreen = () => {
   };
 
   return (
+    <div className='chatwin'>
     <div className="chat-screen">
       {/* Sidebar */}
       <div className="chat-sidebar-container">
@@ -31,6 +32,7 @@ const ChatScreen = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

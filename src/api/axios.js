@@ -143,6 +143,20 @@ export const fetchMessages = async (senderId, receiverId) => {
   }
 };
 
+export const fetchUnreadMessages = async (userId) => {
+  try {
+    // Make a GET request to the endpoint
+    const response = await axios.get(`${API_BASE_URL}/chat/unread-messages/${userId}`);
+
+    // Return the response data containing unread counts
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching unread messages:', error);
+
+    // Handle error by returning an appropriate response or rethrowing
+    throw new Error('Failed to fetch unread messages');
+  }
+};
 // Send a message
 export const sendMessage = async (message) => {
   try {

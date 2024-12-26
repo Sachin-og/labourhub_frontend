@@ -1,36 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { fetchMessages, sendMessage, getUserById } from "../api/axios"; // Adjust the path
-import "./ChatWindow.css"; // Optional: Ensure CSS file exists for styling
+import { fetchMessages, getUserById } from "../api/axios";
+import { io } from "socket.io-client";
+import "./ChatWindow.css";
 
 const ChatWindow = ({ receiverId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [receiver, setReceiver] = useState(null); // Store receiver's details
+  const [receiver, setReceiver] = useState(null);
   const senderId = sessionStorage.getItem("userId");
+  const socket = io("http://localhost:5000"); // Make sure to connect to the right server
 
   useEffect(() => {
     if (receiverId) {
-      // Fetch the receiver's details (name and profile picture)
-      getUserById(receiverId).then((user) => {
-        setReceiver(user); // Store the receiver's details
-      });
-
-      // Fetch the messages between sender and receiver
-      fetchMessages(senderId, receiverId).then((msgs) => {
-        setMessages(msgs);
-      });
+      getUserById(receiverId).then((user) => setReceiver(user));
+      fetchMessages(senderId, receiverId).then((msgs) => setMessages(msgs));
     }
+
+    socket.on("receive_message", (message) => {
+      if (message.receiver_id === senderId || message.sender_id === senderId) {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      }
+    });
+
+    return () => socket.disconnect();
   }, [receiverId, senderId]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== "") {
-      const message = {
-        sender_id: senderId,
-        receiver_id: receiverId,
-        content: newMessage,
-      };
-      const sentMessage = await sendMessage(message);
-      setMessages((prev) => [...prev, sentMessage]);
+      const message = { sender_id: senderId, receiver_id: receiverId, content: newMessage };
+      socket.emit("send_message", message);
+      setMessages((prev) => [...prev, { ...message, id: Date.now() }]);
       setNewMessage("");
     }
   };

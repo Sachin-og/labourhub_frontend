@@ -162,14 +162,19 @@ function CreatePost() {
   return (
     <div>
        {/* <Box flexGrow={1} display="flex" justifyContent="flex-end"> */}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenPostDialog}
-            sx={{ marginRight: 2 }}
-          >
-            Create New Post
-          </Button>
+       <Button
+        variant="contained"
+        color="primary"
+        onClick={handleOpenPostDialog}
+        sx={{
+          marginRight: 2,
+          borderRadius: '20px',
+          backgroundColor: '#25D366',
+          '&:hover': { backgroundColor: '#128C7E' }
+        }}
+      >
+        Create New Post
+      </Button>
           <Dialog open={openPostDialog} onClose={handleClosePostDialog}>
         <DialogTitle>Create a New Post</DialogTitle>
         <DialogContent>

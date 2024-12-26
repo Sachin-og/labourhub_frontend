@@ -1,23 +1,33 @@
+
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
+import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
+import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import HomeIcon from '@mui/icons-material/Home';
+import WorkIcon from '@mui/icons-material/Work';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import ChatIcon from '@mui/icons-material/Chat';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import { useNavigate } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 
-const pages = ['Home', 'Jobs', 'Notifications', 'Messages', 'My Posts'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pageRoutes = {
+  Home: { path: '/home', icon: <HomeIcon /> },
+  Jobs: { path: '/jobs', icon: <WorkIcon /> },
+  Notifications: { path: '/notifications', icon: <NotificationsIcon /> },
+  Messages: { path: '/chat', icon: <ChatIcon /> },
+};
+
+const settings = ['Profile', 'My Posts', 'Account', 'Dashboard', 'Logout'];
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -42,34 +52,29 @@ const Navbar = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userEmail');
-    sessionStorage.removeItem('userId'); // Ensure userId is removed on logout
+    sessionStorage.removeItem('userId');
     navigate('/');
   };
 
   const handleNavigate = (path) => {
-    // Get userId from sessionStorage
     const userId = sessionStorage.getItem('userId');
     if (path === '/notifications' && userId) {
       navigate(`/notifications/${userId}`);
     } else {
       navigate(path);
     }
-    handleCloseNavMenu(); // Close the nav menu after navigation
+    handleCloseNavMenu();
   };
 
-  const pageRoutes = {
-    Home: '/home',
-    'My Posts': '/feed',
-    Messages: '/chat',
-    Notifications: '/notifications', // Path will be dynamically adjusted in handleNavigate
-  };
+  // Retrieve the logged-in user's profile picture
+  const userProfilePicture = sessionStorage.getItem('userProfilePicture');
 
   return (
-    <AppBar position="fixed">
-      <Container maxWidth="xl">
+    <AppBar position="fixed" sx={{ backgroundColor: '#f5f5f5', boxShadow: 'none', borderBottom: '1px solid #ddd' }}>
+      <Container maxWidth="xl">        
         <Toolbar disableGutters>
-          <BusinessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
+        <AssuredWorkloadIcon  sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: '#333' }} />
+        <Typography
             variant="h6"
             noWrap
             component="a"
@@ -77,20 +82,19 @@ const Navbar = () => {
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
+              fontFamily: 'Arial, sans-serif',
+              fontWeight: 600,
+              letterSpacing: '.1rem',
+              color: '#333',
               textDecoration: 'none',
             }}
           >
             LABOUR HUB
           </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexGrow: 1 }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -114,50 +118,45 @@ const Navbar = () => {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              {Object.keys(pageRoutes).map((page) => (
-                <MenuItem key={page} onClick={() => handleNavigate(pageRoutes[page])}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+              {Object.entries(pageRoutes).map(([key, { path }]) => (
+                <MenuItem key={key} onClick={() => handleNavigate(path)}>
+                  {pageRoutes[key].icon}
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+
+          <Box
             sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
+              display: { xs: 'none', md: 'flex' },
+              justifyContent: 'center', // Center the icons horizontally
+              alignItems: 'center', // Center the icons vertically
+              gap: 3, // Add spacing between icons
             }}
           >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {Object.keys(pageRoutes).map((page) => (
-              <Button
-                key={page}
-                onClick={() => handleNavigate(pageRoutes[page])}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+            {Object.entries(pageRoutes).map(([key, { path, icon }]) => (
+              <IconButton
+                key={key}
+                onClick={() => handleNavigate(path)}
+                sx={{
+                  color: '#333',
+                  '&:hover': { color: '#0077b6' },
+                }}
               >
-                {page}
-              </Button>
+                {icon}
+              </IconButton>
             ))}
           </Box>
+
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <PersonIcon
-                  fontSize="large"
-                  sx={{ color: 'white', display: { xs: 'none', md: 'flex' }, mr: 1 }}
-                />
+                {userProfilePicture ? (
+                  <Avatar src={userProfilePicture} alt="Profile Picture" sx={{ width: 40, height: 40 }} />
+                ) : (
+                  <PersonIcon fontSize="large" sx={{ color: '#333' }} />
+                )}
               </IconButton>
             </Tooltip>
             <Menu
@@ -182,6 +181,8 @@ const Navbar = () => {
                   onClick={() => {
                     if (setting === 'Logout') {
                       handleLogout();
+                    } else if (setting === 'My Posts') {
+                      navigate('/feed');
                     } else if (setting === 'Profile') {
                       navigate('/profile');
                     } else {
@@ -189,7 +190,7 @@ const Navbar = () => {
                     }
                   }}
                 >
-                  <Typography textAlign="center">{setting}</Typography>
+                  {setting}
                 </MenuItem>
               ))}
             </Menu>
